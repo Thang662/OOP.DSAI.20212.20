@@ -1,0 +1,14 @@
+.button{
+    -fx-background-color: linear-gradient(to bottom right, #cc99ff 0%, #00ccff 100%);
+    -fx-font: 24px "Serif";
+}
+
+.button:hover{
+    -fx-opacity: 0.5;
+    -fx-text-fill: rgb(0, 21, 255);
+}
+
+.label{
+    -fx-font: 24px "Serif"; 
+    -fx-text-fill: rgb(0, 21, 255);
+}
