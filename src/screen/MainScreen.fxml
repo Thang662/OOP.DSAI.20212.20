@@ -25,7 +25,7 @@
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <TextField />
+            <TextField fx:id="distance" />
          </children>
       </VBox>
       <Pane fx:id="map" prefHeight="650.0" prefWidth="930.0">

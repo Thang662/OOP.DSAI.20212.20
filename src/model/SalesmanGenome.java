@@ -60,7 +60,7 @@ public class SalesmanGenome implements Comparable<SalesmanGenome> {
 	private List<Integer> randomSalesman() {
 	    List<Integer> result = new ArrayList<Integer>();
 	    for (int i = 0; i < numberOfCities; i++) {
-	        if (i != startingCity)
+	        if (i != (startingCity - 1))
 	            result.add(i);
 	    }
 	    Collections.shuffle(result);
@@ -69,7 +69,7 @@ public class SalesmanGenome implements Comparable<SalesmanGenome> {
 	
 	public double calculateFitness() {
 	    double fitness = 0;
-	    int currentCity = startingCity;
+	    int currentCity = startingCity - 1;
 	    
 	    // Calculating path cost
 	    for (int gene : genome) {

@@ -1,14 +1,14 @@
 package model;
 
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.DoubleProperty;
 
 public class City {
 	private String name;
-	public ObservableValue<Double> x;
-	public ObservableValue<Double> y;
+	public DoubleProperty x;
+	public DoubleProperty y;
 	
 	// Constructor with name, x, y
-	public City(String name, ObservableValue<Double> x, ObservableValue<Double> y) {
+	public City(String name, DoubleProperty x, DoubleProperty y) {
 		super();
 		this.name = name;
 		this.x = x;
@@ -21,10 +21,22 @@ public class City {
 	public String getName() {
 		return name;
 	}
-	public ObservableValue<Double> getX() {
+	public Double getX() {
+		return x.get();
+	}
+	public Double getY() {
+		return y.get();
+	}
+	public DoubleProperty getbindX() {
 		return x;
 	}
-	public ObservableValue<Double> getY() {
+	public DoubleProperty getbindY() {
 		return y;
+	}
+	public void setX(double value) {
+		this.x.set(value);
+	}
+	public void setY(double value) {
+		this.y.set(value);
 	}
 }

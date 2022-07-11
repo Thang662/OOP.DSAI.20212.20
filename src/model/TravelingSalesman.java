@@ -5,9 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class TravelingSalesman {
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+public class TravelingSalesman extends Thread{
 	public TravelingSalesman(int generationSize, int genomeSize, int numberOfCities, int reproductionSize, int maxIterations, double d,
-			double[][] travelPrices, int startingCity, int tournamentSize, SelectionType selectionType) {
+			double[][] travelPrices, int startingCity, int tournamentSize, SelectionType selectionType, ArrayList<City> cities, ArrayList<Double> locationX, ArrayList<Double> locationY) {
 		super();
 		this.generationSize = generationSize;
 		this.genomeSize = genomeSize;
@@ -19,6 +22,9 @@ public class TravelingSalesman {
 		this.startingCity = startingCity;
 		this.tournamentSize = tournamentSize;
 		this.selectionType = selectionType;
+		this.cities = cities;
+		this.locationX = locationX;
+		this.locationY = locationY;
 	}
 
 	private int generationSize;
@@ -32,6 +38,13 @@ public class TravelingSalesman {
 	private int targetFitness;
 	private int tournamentSize;
 	private SelectionType selectionType;
+	ArrayList<Double> locationX;
+	ArrayList<Double> locationY;
+	ArrayList<City> cities;
+	double bestDistance;
+	List<SalesmanGenome> population;
+	SalesmanGenome globalBestGenome;
+	
 	
 	public enum SelectionType {
 	    TOURNAMENT,
@@ -160,7 +173,7 @@ public class TravelingSalesman {
 	    return generation;
 	}
 	
-	public SalesmanGenome optimize() {
+	public SalesmanGenome optimize() throws InterruptedException {
 	    List<SalesmanGenome> population = initialPopulation();
 	    SalesmanGenome globalBestGenome = population.get(0);
 	    System.out.println(population);
@@ -168,22 +181,99 @@ public class TravelingSalesman {
 	        List<SalesmanGenome> selected = selection(population);
 	        population = createGeneration(selected);
 	        globalBestGenome = Collections.min(population);
+	        List<Integer> temp = globalBestGenome.getGenome();
+	        System.out.println(temp.size());
+	        for (int j = 0; j < temp.size(); j++) {
+	        	if (j >= (this.startingCity - 1)) {
+	        		this.cities.get(j + 1).setX(this.locationX.get(temp.get(j)));
+		        	this.cities.get(j + 1).setY(this.locationY.get(temp.get(j)));
+	        	}
+	        	else {
+		        	this.cities.get(j).setX(this.locationX.get(temp.get(j)));
+		        	this.cities.get(j).setY(this.locationY.get(temp.get(j)));
+	        	}
+	        }
+//	        Thread.sleep(100);
+//	    	int min = 0;
+//	        int max = 700;
+//	    	this.cities.get(0).setX((Math.random()*(max-min+1)+min));
 	        System.out.println("Iteration " + i + " " + globalBestGenome.getFitness());
+	        this.bestDistance = globalBestGenome.getFitness();
 	        System.out.println(globalBestGenome.getGenome());
 	        if (globalBestGenome.getFitness() < targetFitness)
 	            break;
 	    }
 	    return globalBestGenome;
 	}
+	
+public SalesmanGenome nextStep() throws InterruptedException {	    
+	    List<SalesmanGenome> selected = selection(this.population);
+        this.population = createGeneration(selected);
+        this.globalBestGenome = Collections.min(population);
+        List<Integer> temp = globalBestGenome.getGenome();
+        System.out.println(temp.size());
+        for (int j = 0; j < temp.size(); j++) {
+        	if (j >= (this.startingCity - 1)) {
+        		this.cities.get(j + 1).setX(this.locationX.get(temp.get(j)));
+	        	this.cities.get(j + 1).setY(this.locationY.get(temp.get(j)));
+        	}
+        	else {
+	        	this.cities.get(j).setX(this.locationX.get(temp.get(j)));
+	        	this.cities.get(j).setY(this.locationY.get(temp.get(j)));
+        	}
+        }
+//        Thread.sleep(100);
+//    	int min = 0;
+//        int max = 700;
+//    	this.cities.get(0).setX((Math.random()*(max-min+1)+min));
+//        System.out.println("Iteration " + i + " " + globalBestGenome.getFitness());
+        this.bestDistance = globalBestGenome.getFitness();
+        System.out.println(globalBestGenome.getGenome());
+		return globalBestGenome;
+	}
 
-	private List<SalesmanGenome> initialPopulation() {
+	public List<SalesmanGenome> initialPopulation() {
 		List<SalesmanGenome> population = new ArrayList<SalesmanGenome>();
-		population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
-		population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
-		population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
-		population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
-		population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
-		population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
+		for (int i = 0; i < 5; i++) {
+			population.add(new SalesmanGenome(numberOfCities, travelPrices, startingCity));
+		}
+		this.population = population;
+		this.globalBestGenome = population.get(0);
 		return population;
+	}
+	
+	public ObservableList<String> getRoute(){
+		ObservableList<String> temp = FXCollections.observableArrayList();
+		List<Integer> temp1 = this.globalBestGenome.getGenome();
+		temp.add(this.cities.get(this.startingCity - 1).getName() + "->" + this.cities.get(temp1.get(0)).getName());
+		for (int i = 0; i < temp1.size(); i++) {
+			if (i < (temp1.size() - 1)) {
+				temp.add(this.cities.get(temp1.get(i)).getName() + "->" + this.cities.get(temp1.get(i + 1)).getName());
+			}
+			else {
+				temp.add(this.cities.get(temp1.get(i)).getName() + "->" + this.cities.get(this.startingCity - 1).getName());
+			}
+		}
+		return temp;
+	}
+
+	public ArrayList<City> getCities() {
+		return cities;
+	}
+
+	public int getStartingCity() {
+		return startingCity;
+	}
+	
+	public double getBestDistance() {
+		return bestDistance;
+	}
+
+	public ArrayList<Double> getLocationX() {
+		return locationX;
+	}
+
+	public ArrayList<Double> getLocationY() {
+		return locationY;
 	}
 }

@@ -11,7 +11,7 @@ import model.TravelingSalesman.SelectionType;
 
 public class Test {
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
 		final String COMMA_DELIMITER = ",";
 		double[][] route = new double[26][26];
 		// TODO Auto-generated method stub
@@ -22,7 +22,7 @@ public class Test {
 		        route[Integer.parseInt(values[0])][Integer.parseInt(values[1])] = Double.parseDouble(values[2]);
 		    }
 		}
-		TravelingSalesman test = new TravelingSalesman(200, 25, 26, 200, 2000, 0.2, route, 5, 2, SelectionType.TOURNAMENT);
+		TravelingSalesman test = new TravelingSalesman(200, 25, 26, 200, 1, 0.2, route, 5, 2, SelectionType.TOURNAMENT, Map.loadMap(), Map.loadLocationX(), Map.loadLocationY());
 		test.optimize();
 
 	}
