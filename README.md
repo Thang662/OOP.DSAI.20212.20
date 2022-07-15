@@ -8,3 +8,4 @@
 - Controller, UX: Le Tran Thang, Nguyen Phuc Thanh
 - Report: Le Tran Thang, Le Thanh Thang
 - Slide: Hoang Van Thang
+- Demo link: https://drive.google.com/file/d/1MPkoQUUoPSMtAChislOVd7N85Fhf_ONw/view
